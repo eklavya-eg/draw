@@ -20,6 +20,9 @@ importers:
 
   apps/http-backend:
     dependencies:
+      '@repo/common':
+        specifier: workspace:*
+        version: link:../../packages/common
       '@types/express':
         specifier: ^5.0.1
         version: 5.0.1
@@ -36,9 +39,6 @@ importers:
       '@repo/backend-common':
         specifier: workspace:*
         version: link:../../packages/backend-common
-      '@repo/common':
-        specifier: workspace:*
-        version: link:../../packages/common
       '@repo/db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -85,6 +85,9 @@ importers:
 
   apps/ws-backend:
     dependencies:
+      '@repo/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       '@types/jsonwebtoken':
         specifier: ^9.0.9
         version: 9.0.9
@@ -108,7 +111,7 @@ importers:
   packages/backend-common:
     dependencies:
       '@types/node':
-        specifier: ^22.14.0
+        specifier: ^22.10.5
         version: 22.14.0
     devDependencies:
       '@repo/typescript-config':

@@ -13,7 +13,7 @@ export function middleware(req: Request, res: Response, next: NextFunction) {
         next();
     } else {
         res.status(403).json({
-            message: 'Unauthorized'
+            message: 'Not authorized'
         })
     }
 }
