@@ -1,0 +1,31 @@
+{
+  "name": "@repo/common",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "exports": {
+    "./types": {
+      "types": "./src/types.ts",
+      "default": "./dist/types.js"
+    },
+    "./config": {
+      "types": "./src/config.ts",
+      "default": "./dist/config.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jsonwebtoken": "^9.0.2",
+    "zod": "^3.24.4"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "typescript": "^5.8.3"
+  }
+}
