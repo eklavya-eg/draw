@@ -4,9 +4,11 @@ import { SignupSchema, SigninSchema, CreateRoomSchema } from '@repo/common/types
 import { JWT_SECRET } from '@repo/common/config'
 import { prismaClient } from '@repo/db/client';
 import { authorization } from './middlewares';
+import cors from "cors";
 
 const app = express();
 app.use(express.json())
+app.use(cors())
 
 app.get('/check', function (req, res) {
     res.send("healthy");
@@ -76,7 +78,7 @@ app.post('/signin', async (req, res) => {
     }
 })
 
-app.get("/room", authorization, async (req, res) => {
+app.post("/room", authorization, async (req, res) => {
     const parsedData = CreateRoomSchema.safeParse(req.body);
     if (!parsedData.success) {
         res.json({
@@ -93,7 +95,26 @@ app.get("/room", authorization, async (req, res) => {
             }
         })
         res.json({
+            slug: slug,
             roomId: room.id
+        })
+    } catch (e) {
+        res.status(411).json({ message: "Slug not available" })
+    }
+})
+
+app.get("/rooms", authorization, async (req, res) => {
+    try {
+        const rooms = await prismaClient.room.findMany({
+            where: {}
+        })
+        res.json({
+            rooms: rooms.map((room)=>{
+                return {
+                    slug: room.slug,
+                    roomId: room.id
+                };
+            })
         })
     } catch (e) {
         res.status(411).json({ message: "Slug not available" })
@@ -107,13 +128,15 @@ app.get("/chats/:roomId", async (req, res) => {
             where: {
                 roomId: roomId
             },
+            select: {
+                message:true
+            },
             orderBy: {
                 id: 'desc'
             },
-            take: 50
         });
         res.json({
-            messages: chats
+            messages: chats.map(chat=>chat.message)
         })
     } catch {
         res.status(404).json({

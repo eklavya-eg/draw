@@ -5,7 +5,7 @@ import { JWT_SECRET } from "@repo/common/config";
 import { parseArgs } from "util";
 import { prismaClient } from "@repo/db/client";
 
-const wss = new WebSocketServer({ port: 5001 }, ()=>{
+const wss = new WebSocketServer({ port: 5001 }, () => {
     console.log("✅ PORT -> 5001");
 })
 
@@ -45,7 +45,13 @@ wss.on("connection", function connection(ws: WebSocket, request: IncomingMessage
     }
 
     ws.on("message", async function message(data) {
-        const parsedData = JSON.parse(data as unknown as string);
+        let parsedData;
+        if(typeof data !== "string") {
+            parsedData = JSON.parse(data.toString());
+        } else {
+            parsedData = JSON.parse(data);
+        }
+        
         const user = users.find(u => u.ws == ws);
         if (!user) {
             ws.close();
@@ -63,11 +69,11 @@ wss.on("connection", function connection(ws: WebSocket, request: IncomingMessage
                     data: {
                         roomId: Number(parsedData.roomId),
                         userId: user.userId,
-                        message: parsedData.message
+                        message: JSON.stringify(parsedData.message)
                     }
                 })
-                users.forEach(user=>{
-                    if(user.rooms.includes(Number(parsedData.roomId))){
+                users.forEach(user => {
+                    if (user.rooms.includes(Number(parsedData.roomId))) {
                         user.ws.send(JSON.stringify({
                             type: "chat",
                             message: parsedData.message,

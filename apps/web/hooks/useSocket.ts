@@ -3,7 +3,7 @@ import { WS_URL } from "../app/config";
 
 export function useSocket(){
     const [loading, setLoading] = useState<boolean>(true)
-    const [socket, setSocket] = useState<WebSocket>();
+    const [socket, setSocket] = useState<WebSocket | null>(null);
 
     useEffect(()=>{
         const ws = new WebSocket(WS_URL);
