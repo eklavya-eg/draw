@@ -1,21 +1,33 @@
 "use client"
 
-import { useState } from 'react';
-import { PlusIcon, FolderPlusIcon, PlayPauseIcon, PlusCircleIcon, UserPlusIcon, SquaresPlusIcon } from '@heroicons/react/24/outline';
-import { Plus_Jakarta_Sans } from 'next/font/google';
+import { useRef, useState } from 'react';
 
 export default function ExpandableBox() {
     const [isOpen, setIsOpen] = useState(false);
+    const isHovering = useRef(false);
     const [istOpen, setIstOpen] = useState(false);
     return (
-        <div className="h-screen bg-gray-100">
+        <div className="h-screen bg-stone-950">
             <div
-                className={`fixed top-1/4 transition-all duration-600 ease-in-out bg-amber-100 text-white w-10 h-[40vh] p-4 shadow-xl cursor-pointer rounded-lg 
-          ${isOpen ? "left-2" : "-left-7"}
+                className={`fixed top-1/4 transition-all duration-600 ease-in-out bg-stone-100 text-white w-10 h-[40vh] p-4 shadow-xl rounded-lg 
+          ${isOpen ? "left-5" : "-left-7"}
         `}
-                onClick={() => setIsOpen(!isOpen)}
+                // onClick={() => setIsOpen(!isOpen)}
+                onMouseEnter={() => {
+                    isHovering.current = true;
+                    setIsOpen(true);
+                }}
+                onMouseLeave={() => {
+                    isHovering.current = false;
+                    setTimeout(() => {
+                        if (!isHovering.current) {
+                            setIsOpen(false);
+                        }
+                    }, 1000); // 3 seconds delay
+                }
+                }
             >
-                {isOpen ? "Click" : "Click"}
+
             </div>
 
             <div
@@ -26,7 +38,6 @@ export default function ExpandableBox() {
             >
                 {istOpen ? "Click" : "Click"}
             </div>
-            <PlusIcon className='size-12 border-2 border-gray-800 rounded-lg' />
         </div>
     );
 }

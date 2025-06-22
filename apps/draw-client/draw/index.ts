@@ -1,37 +1,72 @@
 import { SERVER_URL } from "@/config";
+import { Tool } from "@/types/tool";
 import axios from "axios";
 
 type Shape = {
-    type: "rect",
+    type: "box",
     x: number,
     y: number,
     width: number,
     height: number
 } | {
-    type: "circle",
-    centerX: number,
-    centerY: number,
-    radius: number
+    type: "ellipse",
+    x: number,
+    y: number,
+    width: number,
+    height: number
 }
 
-export async function initDraw(canvas: HTMLCanvasElement, roomId: string, socket: WebSocket) {
+export async function initDraw(canvas: HTMLCanvasElement, roomId: string, socket: WebSocket, selectedTool: Tool) {
 
-    const existingShapes: Shape[] = await getExistingShapes(roomId);
+    const existingShapes: Shape[] = await getExistingShapes(roomId)
     
     const ctx = canvas.getContext("2d");
     if (!ctx) {
         return;
     }
     
-    initSocketHandlers(ctx, canvas, socket, existingShapes);
-
     ctx.fillStyle = "rgba(0, 0, 0)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+    renewCanvas(ctx, canvas, existingShapes);
+    initSocketHandlers(ctx, canvas, socket, existingShapes);
+
+    switch (selectedTool) {
+        case "box":
+            boxHandler(canvas, ctx, roomId, existingShapes, socket);
+        case "ellipse":
+            ellipseHandler(canvas, ctx, roomId, existingShapes, socket);
+    }
+    
+}
+
+function ellipseHandler(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, roomId: string, existingShapes: Shape[], socket: WebSocket){
     let clicked = false;
     let startX = 0;
     let startY = 0;
 
+    canvas.addEventListener("mousedown", (e) => {
+        let clicked = true;
+        let startX = e.clientX;
+        let startY = e.clientY;
+    })
+
+    canvas.addEventListener("mouseup", (e) => {
+        clicked = false;
+        const currentShape: Shape = {
+            type: "ellipse",
+            x: startX,
+            y: startY,
+            width: e.clientX-startX,
+            height: e.clientY-startY
+        }
+    })
+}
+
+function boxHandler(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, roomId: string, existingShapes: Shape[], socket: WebSocket){
+    let clicked = false;
+    let startX = 0;
+    let startY = 0;
 
     canvas.addEventListener("mousedown", (e) => {
         clicked = true;
@@ -42,7 +77,7 @@ export async function initDraw(canvas: HTMLCanvasElement, roomId: string, socket
     canvas.addEventListener("mouseup", (e) => {
         clicked = false;
         const currentShape: Shape = {
-            type: "rect",
+            type: "box",
             x: startX,
             y: startY,
             width: e.clientX - startX,
@@ -70,7 +105,7 @@ function renewCanvas(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, e
     ctx.fillRect(0, 0, canvas.width, canvas.height)
     ctx.strokeStyle = "rgba(255, 255, 255)"
     existingShapes.forEach((shape) => {
-        if (shape.type == "rect") {
+        if (shape.type == "box") {
             ctx.strokeRect(shape.x, shape.y, shape.width, shape.height)
         }
     })

@@ -1,0 +1,1 @@
+export type Tool = "select" | "draw" | "line" | "arrow" | "box" | "triangle" | "ellipse" | "color" | "eraser";
