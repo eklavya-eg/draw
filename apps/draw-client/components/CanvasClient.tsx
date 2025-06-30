@@ -3,7 +3,7 @@
 import { useSocket } from "@//hooks/useSocket"
 import { initDraw } from "@/draw"
 import { useEffect, useRef, useState } from "react"
-import { ArrowLeftStartOnRectangleIcon, ArrowLongDownIcon, ArrowLongUpIcon, ArrowTrendingUpIcon, ArrowUturnLeftIcon, ArrowUturnRightIcon, BeakerIcon, EllipsisHorizontalIcon, ExclamationTriangleIcon, GlobeAsiaAustraliaIcon, PencilIcon, PhotoIcon, PlusIcon, Square2StackIcon, Squares2X2Icon, TableCellsIcon } from "@heroicons/react/24/solid"
+import { ArrowLeftStartOnRectangleIcon, ArrowLongDownIcon, ArrowLongUpIcon, ArrowTrendingUpIcon, ArrowUturnLeftIcon, ArrowUturnRightIcon, EllipsisHorizontalIcon, GlobeAsiaAustraliaIcon, PencilIcon, PlusIcon, Square2StackIcon, TableCellsIcon } from "@heroicons/react/24/solid"
 import { Tool } from "@/types/tool"
 
 export default function CanvasClient({ roomId }: {
@@ -38,56 +38,38 @@ export default function CanvasClient({ roomId }: {
                         {isMenuOpen ? <ArrowLongUpIcon className="size-5" /> : <ArrowLongDownIcon className="size-5" />}
                     </button>
 
-                    <button aria-label="move" className={`items-center justify-center p-[2px] h-[1.3vw] w-[1.2vw] hover:bg-gray-100 rounded-md`} >
-                        <Squares2X2Icon className="size-5" />
+                    <button aria-label="select" className={`items-center justify-center p-[2px] h-[1.3vw] w-[1.2vw] hover:bg-gray-100 rounded-md ${currentSelected == "select" ? "bg-gray-200" : ""}`} >
+                        {currentSelected == "select" ? <PlusIcon className="size-5" /> : <PlusIcon className="size-5" />}
                     </button>
 
-                    <button aria-label="select" className={`items-center justify-center p-[2px] h-[1.3vw] w-[1.2vw] hover:bg-gray-100 rounded-md ${currentSelected=="select" ? "bg-gray-200" : ""}`} >
-                        {currentSelected=="select" ? <PlusIcon className="size-5" /> : <PlusIcon className="size-5" />}
-                    </button>
-
-                    <button aria-label="draw" onClick={()=>{
+                    <button aria-label="draw" onClick={() => {
                         setCurrentSelected("draw")
-                    }} className={`items-center justify-center p-[2px] h-[1.3vw] w-[1.2vw] hover:bg-gray-100 rounded-md ${currentSelected=="draw" ? "bg-gray-200" : ""}`} >
-                        {currentSelected=="draw" ? <PencilIcon className="size-5" /> : <PencilIcon className="size-5" />}
+                    }} className={`items-center justify-center p-[2px] h-[1.3vw] w-[1.2vw] hover:bg-gray-100 rounded-md ${currentSelected == "draw" ? "bg-gray-200" : ""}`} >
+                        {currentSelected == "draw" ? <PencilIcon className="size-5" /> : <PencilIcon className="size-5" />}
                     </button>
 
-                    <button aria-label="line" onClick={()=>{
+                    <button aria-label="line" onClick={() => {
                         setCurrentSelected("line")
-                    }} className={`items-center justify-center p-[2px] h-[1.3vw] w-[1.2vw] hover:bg-gray-100 rounded-md ${currentSelected=="line" ? "bg-gray-200" : ""}`} >
-                        {currentSelected=="line" ? <EllipsisHorizontalIcon className="size-5" /> : <EllipsisHorizontalIcon className="size-5" />}
+                    }} className={`items-center justify-center p-[2px] h-[1.3vw] w-[1.2vw] hover:bg-gray-100 rounded-md ${currentSelected == "line" ? "bg-gray-200" : ""}`} >
+                        {currentSelected == "line" ? <EllipsisHorizontalIcon className="size-5" /> : <EllipsisHorizontalIcon className="size-5" />}
                     </button>
 
-                    <button aria-label="arrow" onClick={()=>{
+                    <button aria-label="arrow" onClick={() => {
                         setCurrentSelected("arrow")
-                    }} className={`items-center justify-center p-[2px] h-[1.3vw] w-[1.2vw] hover:bg-gray-100 rounded-md ${currentSelected=="arrow" ? "bg-gray-200" : ""}`} >
-                        {currentSelected=="arrow" ? <ArrowTrendingUpIcon className="size-5" /> : <ArrowTrendingUpIcon className="size-5" />}
+                    }} className={`items-center justify-center p-[2px] h-[1.3vw] w-[1.2vw] hover:bg-gray-100 rounded-md ${currentSelected == "arrow" ? "bg-gray-200" : ""}`} >
+                        {currentSelected == "arrow" ? <ArrowTrendingUpIcon className="size-5" /> : <ArrowTrendingUpIcon className="size-5" />}
                     </button>
 
-                    <button aria-label="box" onClick={()=>{
+                    <button aria-label="box" onClick={() => {
                         setCurrentSelected("box")
-                    }} className={`items-center justify-center p-[2px] h-[1.3vw] w-[1.2vw] hover:bg-gray-100 rounded-md ${currentSelected=="box" ? "bg-gray-200" : ""}`} >
-                        {currentSelected=="box" ? <Square2StackIcon className="size-5" /> : <Square2StackIcon className="size-5" />}
+                    }} className={`items-center justify-center p-[2px] h-[1.3vw] w-[1.2vw] hover:bg-gray-100 rounded-md ${currentSelected == "box" ? "bg-gray-200" : ""}`} >
+                        {currentSelected == "box" ? <Square2StackIcon className="size-5" /> : <Square2StackIcon className="size-5" />}
                     </button>
 
-                    <button aria-label="triangle" onClick={()=>{
-                        setCurrentSelected("triangle")
-                    }} className={`items-center justify-center p-[2px] h-[1.3vw] w-[1.2vw] hover:bg-gray-100 rounded-md ${currentSelected=="triangle" ? "bg-gray-200" : ""}`} >
-                        {currentSelected=="triangle" ? <ExclamationTriangleIcon className="size-5" /> : <ExclamationTriangleIcon className="size-5" />}
-                    </button>
-
-                    <button aria-label="ellipse" onClick={()=>{
+                    <button aria-label="ellipse" onClick={() => {
                         setCurrentSelected("ellipse")
-                    }} className={`items-center justify-center p-[2px] h-[1.3vw] w-[1.2vw] hover:bg-gray-100 rounded-md ${currentSelected=="ellipse" ? "bg-gray-200" : ""}`} >
-                        {currentSelected=="ellipse" ? <GlobeAsiaAustraliaIcon className="size-5" /> : <GlobeAsiaAustraliaIcon className="size-5" />}
-                    </button>
-
-                    <button aria-label="color" className="items-center justify-center p-[2px] h-[1.3vw] w-[1.2vw] hover:bg-gray-100 rounded-md" >
-                        <BeakerIcon className="size-5" />
-                    </button>
-
-                    <button aria-label="background-color" className="items-center justify-center p-[2px] h-[1.3vw] w-[1.2vw] hover:bg-gray-100 rounded-md" >
-                        <PhotoIcon className="size-5" />
+                    }} className={`items-center justify-center p-[2px] h-[1.3vw] w-[1.2vw] hover:bg-gray-100 rounded-md ${currentSelected == "ellipse" ? "bg-gray-200" : ""}`} >
+                        {currentSelected == "ellipse" ? <GlobeAsiaAustraliaIcon className="size-5" /> : <GlobeAsiaAustraliaIcon className="size-5" />}
                     </button>
 
                     <button aria-label="grids" className="items-center justify-center p-[2px] h-[1.3vw] w-[1.2vw] hover:bg-gray-100 rounded-md" >
