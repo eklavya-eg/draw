@@ -72,9 +72,9 @@ wss.on("connection", function connection(ws: WebSocket, request: IncomingMessage
                         message: JSON.stringify(parsedData.message)
                     }
                 })
-                users.forEach(user => {
-                    if (user.rooms.includes(Number(parsedData.roomId))) {
-                        user.ws.send(JSON.stringify({
+                users.forEach(usr => {
+                    if (usr.userId!=user.userId && usr.rooms.includes(Number(parsedData.roomId))) {
+                        usr.ws.send(JSON.stringify({
                             type: "chat",
                             message: parsedData.message,
                             roomId: Number(parsedData.roomId)

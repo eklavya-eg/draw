@@ -1,10 +1,10 @@
 "use client"
 
 import { useSocket } from "@//hooks/useSocket"
-import { initDraw } from "@/draw"
 import { useEffect, useRef, useState } from "react"
-import { ArrowLeftStartOnRectangleIcon, ArrowLongDownIcon, ArrowLongUpIcon, ArrowTrendingUpIcon, ArrowUturnLeftIcon, ArrowUturnRightIcon, EllipsisHorizontalIcon, GlobeAsiaAustraliaIcon, PencilIcon, PlusIcon, Square2StackIcon, TableCellsIcon } from "@heroicons/react/24/solid"
+import { ArrowLeftStartOnRectangleIcon, ArrowLongDownIcon, ArrowLongUpIcon, ArrowTrendingUpIcon, ArrowUturnLeftIcon, ArrowUturnRightIcon, CubeTransparentIcon, EllipsisHorizontalIcon, GlobeAsiaAustraliaIcon, PencilIcon, PlusIcon, Square2StackIcon, TableCellsIcon } from "@heroicons/react/24/solid"
 import { Tool } from "@/types/tool"
+import { DrawClient } from "@/draw/DrawClientApi"
 
 export default function CanvasClient({ roomId }: {
     roomId: string
@@ -13,15 +13,26 @@ export default function CanvasClient({ roomId }: {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [isMenuOpen, setIsMenuOpen] = useState(true);
     const [currentSelected, setCurrentSelected] = useState<Tool>("draw");
+    const [drawClient, setDrawClient] = useState<DrawClient>();
 
+    useEffect(()=>{
+        drawClient?.setTool(currentSelected);
+    }, [currentSelected, drawClient])
+    
     useEffect(() => {
         if (canvasRef.current && socket && !loading) {
-            initDraw(canvasRef.current, roomId, socket, currentSelected);
             socket.send(JSON.stringify({
                 type: "join_room",
                 roomId: roomId
             }))
+            const dc = new DrawClient(canvasRef.current, roomId, socket);
+            setDrawClient(dc);
+
+            return () => {
+                dc.destroyMouseHandlers();
+            }
         }
+
     }, [canvasRef, roomId, loading, socket, currentSelected]);
 
     return loading ? (
@@ -31,7 +42,7 @@ export default function CanvasClient({ roomId }: {
     ) : (
         <div className="h-screen overflow-hidden" >
             <div className={`fixed w-full flex justify-center transition-all duration-600 ease-in-out ${isMenuOpen ? "top-4" : "-top-3"}`} >
-                <div className="flex justify-between item-center bg-stone-400 h-[3vh] w-[25vw] p-[4px] shadow-xl rounded-md top-4" >
+                <div className="flex justify-between item-center bg-stone-400 h-[3vh] w-[17vw] p-[4px] shadow-xl rounded-md top-4" >
                     {/* open move select draw line arrow box triangle ellipse color eraser background-color grids*/}
 
                     <button aria-label="open" className="items-center justify-center p-[3px] h-[1.3vw] w-[1.2vw] hover:bg-gray-100 rounded-md" onClick={() => setIsMenuOpen(v => !v)} >
@@ -46,6 +57,12 @@ export default function CanvasClient({ roomId }: {
                         setCurrentSelected("draw")
                     }} className={`items-center justify-center p-[2px] h-[1.3vw] w-[1.2vw] hover:bg-gray-100 rounded-md ${currentSelected == "draw" ? "bg-gray-200" : ""}`} >
                         {currentSelected == "draw" ? <PencilIcon className="size-5" /> : <PencilIcon className="size-5" />}
+                    </button>
+
+                    <button aria-label="eraser" onClick={() => {
+                        setCurrentSelected("eraser")
+                    }} className={`items-center justify-center p-[2px] h-[1.3vw] w-[1.2vw] hover:bg-gray-100 rounded-md ${currentSelected == "eraser" ? "bg-gray-200" : ""}`} >
+                        {currentSelected == "eraser" ? <CubeTransparentIcon className="size-5" /> : <CubeTransparentIcon className="size-5" />}
                     </button>
 
                     <button aria-label="line" onClick={() => {

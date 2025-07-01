@@ -21,9 +21,13 @@ export type Shape = {
 } | {
     type: "draw",
     x: number,
-    y: number
+    y: number,
+    status: DrawStatus
 } | {
     type: "eraser",
     x: number,
-    y: number
+    y: number,
+    status: DrawStatus
 }
+
+export type DrawStatus = "N" | "E";
