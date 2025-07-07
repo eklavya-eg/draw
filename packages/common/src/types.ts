@@ -13,5 +13,6 @@ export const SigninSchema = z.object({
 })
 
 export const CreateRoomSchema = z.object({
-    slug: z.string().min(3).max(20)
+    slug: z.string().min(3).max(20),
+    pin: z.string().min(1).optional()
 })

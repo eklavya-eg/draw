@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE "Chat" ADD COLUMN     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "Room" ADD COLUMN     "pin" TEXT,
+ADD COLUMN     "public" BOOLEAN NOT NULL DEFAULT true;
