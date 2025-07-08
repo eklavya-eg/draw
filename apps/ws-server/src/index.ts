@@ -4,6 +4,8 @@ import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from "@repo/common/config";
 import { parseArgs } from "util";
 import { prismaClient } from "@repo/db/client";
+import { SERVER_URL } from "./config";
+import axios from "axios";
 
 const wss = new WebSocketServer({ port: 5001 }, () => {
     console.log("✅ PORT -> 5001");
@@ -58,6 +60,11 @@ wss.on("connection", function connection(ws: WebSocket, request: IncomingMessage
             return;
         }
         if (parsedData.type == "join_room") {
+            const res = axios.get(`${SERVER_URL}connect/${String(parsedData.roomId)}`, {
+                params: {
+                    pin: parsedData.pin
+                }
+            })
             user.rooms.push(Number(parsedData.roomId));
         }
         if (parsedData.type == "leave_room") {

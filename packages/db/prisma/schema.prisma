@@ -29,8 +29,8 @@ model Room {
   slug          String        @unique
   createAt      DateTime      @default(now())
   adminId       String
-  public        Boolean       @default(true)
-  pin           String?
+  public        Boolean
+  pin           String        @default("")
   admin         User          @relation(fields: [adminId], references: [id])
   chats         Chat[]
 }

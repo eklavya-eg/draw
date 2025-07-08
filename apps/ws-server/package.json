@@ -13,10 +13,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@repo/db": "workspace:*",
     "@repo/common": "workspace:*",
+    "@repo/db": "workspace:*",
+    "@types/axios": "^0.14.4",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/ws": "^8.18.1",
+    "axios": "^1.9.0",
     "jsonwebtoken": "^9.0.2",
     "ws": "^8.18.2"
   },
