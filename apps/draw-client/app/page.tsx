@@ -39,10 +39,10 @@ export default function Home() {
             {token == null ? <> <Link href="/signin">
               <Button variant="ghost">Sign In</Button>
             </Link>
-              <Link href="/signup">
+              <Link className="hover:bg-purple-100 transition-transform hover:scale-95 rounded-full" href="/signup">
                 <Button>Get Started</Button>
               </Link></> :
-              <Link className="hover:bg-gray-200 transition-transform hover:scale-95 rounded-xl" href="/dashboard">
+              <Link className="hover:bg-red-100 transition-transform hover:scale-95 rounded-full" href="/dashboard">
                 <Button>Dashboard <ArrowRight className="text-green-700" strokeWidth={4} /></Button>
               </Link>
             }
@@ -57,7 +57,7 @@ export default function Home() {
               <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-red-500 opacity-60 blur-xl"></div>
 
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 bg-white text-red-700 px-4 py-2 rounded-full text-sm font-medium relative">
+              <div className="inline-flex items-center border border-30 border-red-900 gap-2 bg-white text-red-700 px-4 py-2 rounded-full text-sm font-medium relative">
                 <Sparkles className="w-4 h-4" />
                 Collaborative Drawing Made Simple
               </div>
@@ -79,13 +79,13 @@ export default function Home() {
                 <Link className="hover:bg-red-100 transition-transform hover:scale-95 rounded-full" href="/signup">
                   <Button size="lg" className="text-lg px-8 py-6">
                     Start Drawing Now
-                    <ArrowRight className="w-5 h-5 ml-2" />
+                    <ArrowRight className="w-5 h-5 ml-2 text-green-700" strokeWidth={4} />
                   </Button>
                 </Link> :
                 <Link className="hover:bg-purple-100 transition-transform hover:scale-95 rounded-full" href="/dashboard">
                   <Button size="lg" className="text-lg px-8 py-6">
                     Start Drawing Now
-                    <ArrowRight className="w-5 h-5 ml-2" />
+                    <ArrowRight className="w-5 h-5 ml-2 text-green-700" strokeWidth={4} />
                   </Button>
                 </Link>}
             </div>

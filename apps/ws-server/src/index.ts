@@ -2,7 +2,6 @@ import { WebSocketServer, WebSocket } from "ws";
 import { IncomingMessage } from "http";
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from "@repo/common/config";
-import { parseArgs } from "util";
 import { prismaClient } from "@repo/db/client";
 import { SERVER_URL } from "./config";
 import axios from "axios";
@@ -31,9 +30,9 @@ function authorize(request: IncomingMessage, ws: WebSocket) {
         return false;
     }
     const user = jwt.verify(token, JWT_SECRET);
+    // @ts-ignore
     users.push({
-        // @ts-ignore
-        userId: user.id,
+        userId: (user as jwt.JwtPayload).id,
         rooms: [],
         ws: ws
     });
