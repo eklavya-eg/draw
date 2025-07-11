@@ -22,12 +22,12 @@ export type Shape = {
     type: "draw",
     x: number,
     y: number,
-    status: DrawStatus
+    xn: number,
+    yn: number
 } | {
     type: "eraser",
     x: number,
     y: number,
-    status: DrawStatus
+    xn: number,
+    yn: number
 }
-
-export type DrawStatus = "N" | "E";

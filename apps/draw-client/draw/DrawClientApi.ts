@@ -1,6 +1,6 @@
 import axios from "axios";
 import { SERVER_URL } from "@/config";
-import { DrawStatus, Shape, Tool } from "@/types/tool";
+import { Shape, Tool } from "@/types/tool";
 
 export class DrawClient {
 
@@ -16,12 +16,6 @@ export class DrawClient {
     private currentX: number = 0;
     private currentY: number = 0;
     private currentTool: Tool = "draw";
-    private drawStatus: DrawStatus = "E";
-    private eraserStatus: DrawStatus = "E";
-    private prevDrawX: number = 0;
-    private prevDrawY: number = 0;
-    private prevEraserX: number = 0;
-    private prevEraserY: number = 0;
 
     constructor(canvas: HTMLCanvasElement, roomId: string, socket: WebSocket) {
         this.canvas = canvas;
@@ -68,9 +62,9 @@ export class DrawClient {
             } else if (shape.type === "line") {
                 this.drawline(shape.startx, shape.starty, shape.endx, shape.endy);
             } else if (shape.type === "draw") {
-                this.drawdraw(shape.x, shape.y, shape.status);
+                this.drawdraw(shape.x, shape.y, shape.xn, shape.yn);
             } else if (shape.type === "eraser") {
-                this.eraserdraw(shape.x, shape.y, shape.status);
+                this.eraserdraw(shape.x, shape.y, shape.xn, shape.yn);
             }
         })
     }
@@ -266,12 +260,13 @@ export class DrawClient {
             this.leftClicked = false;
             const shape: Shape = {
                 type: "draw",
-                x: this.currentX,
-                y: this.currentY,
-                status: "E"
+                x: this.startX,
+                y: this.startY,
+                xn: this.currentX,
+                yn: this.currentY
             };
             this.existingShapes.push(shape);
-            this.drawdraw(this.currentX, this.currentY, "E");
+            this.drawdraw(this.startX, this.startY, this.currentX, this.currentY);
             this.socket.send(JSON.stringify({
                 type: "chat",
                 message: shape,
@@ -283,31 +278,28 @@ export class DrawClient {
         if (this.leftClicked == true) {
             const shape: Shape = {
                 type: "draw",
-                x: this.currentX,
-                y: this.currentY,
-                status: "N"
+                x: this.startX,
+                y: this.startY,
+                xn: this.currentX,
+                yn: this.currentY
             };
             this.existingShapes.push(shape);
-            this.drawdraw(this.currentX, this.currentY, "N");
+            this.drawdraw(this.startX, this.startY, this.currentX, this.currentY);
             this.socket.send(JSON.stringify({
                 type: "chat",
                 message: shape,
                 roomId: this.roomId
             }));
+            this.startX = this.currentX;
+            this.startY = this.currentY;
         }
     }
-    drawdraw(x: number, y: number, status: DrawStatus) {
-        console.log(this.drawStatus, status);
-        if ((this.drawStatus == "N" && status == "E") || (this.drawStatus == "N" && status == "N")) {
-            this.ctx.beginPath();
-            this.ctx.moveTo(this.prevDrawX, this.prevDrawY);
-            this.ctx.lineTo(x, y);
-            this.ctx.stroke();
-            this.ctx.closePath();
-        }
-        this.drawStatus = status;
-        this.prevDrawX = x;
-        this.prevDrawY = y;
+    drawdraw(x: number, y: number, xn: number, yn: number) {
+        this.ctx.beginPath();
+        this.ctx.moveTo(x, y);
+        this.ctx.lineTo(xn, yn);
+        this.ctx.stroke();
+        this.ctx.closePath();
     }
 
 
@@ -321,12 +313,13 @@ export class DrawClient {
             this.leftClicked = false;
             const shape: Shape = {
                 type: "eraser",
-                x: this.currentX,
-                y: this.currentY,
-                status: "E"
+                x: this.startX,
+                y: this.startY,
+                xn: this.currentX,
+                yn: this.currentY
             };
             this.existingShapes.push(shape);
-            this.eraserdraw(this.currentX, this.currentY, "E");
+            this.eraserdraw(this.startX, this.startY, this.currentX, this.currentY);
             this.socket.send(JSON.stringify({
                 type: "chat",
                 message: shape,
@@ -338,32 +331,30 @@ export class DrawClient {
         if (this.leftClicked == true) {
             const shape: Shape = {
                 type: "eraser",
-                x: this.currentX,
-                y: this.currentY,
-                status: "N"
+                x: this.startX,
+                y: this.startY,
+                xn: this.currentX,
+                yn: this.currentY
             };
             this.existingShapes.push(shape);
-            this.eraserdraw(this.currentX, this.currentY, "N");
+            this.eraserdraw(this.startX, this.startY, this.currentX, this.currentY);
             this.socket.send(JSON.stringify({
                 type: "chat",
                 message: shape,
                 roomId: this.roomId
             }));
+            this.startX = this.currentX;
+            this.startY = this.currentY;
         }
     }
-    eraserdraw(x: number, y: number, status: DrawStatus) {
+    eraserdraw(x: number, y: number, xn: number, yn: number) {
         this.ctx.lineWidth = 7
         this.ctx.strokeStyle = "black"
-        if ((this.eraserStatus == "N" && status == "E") || (this.eraserStatus == "N" && status == "N")) {
-            this.ctx.beginPath();
-            this.ctx.moveTo(this.prevEraserX, this.prevEraserY);
-            this.ctx.lineTo(x, y);
-            this.ctx.stroke();
-            this.ctx.closePath();
-        }
-        this.eraserStatus = status;
-        this.prevEraserX = x;
-        this.prevEraserY = y;
+        this.ctx.beginPath();
+        this.ctx.moveTo(x, y);
+        this.ctx.lineTo(xn, yn);
+        this.ctx.stroke();
+        this.ctx.closePath();
         this.ctx.lineWidth = 2;
         this.ctx.strokeStyle = "white"
     }
