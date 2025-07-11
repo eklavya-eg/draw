@@ -19,7 +19,6 @@ import {
 import { useStore } from "@tanstack/react-store";
 import { AuthStore } from "@/stores/auth";
 
-
 export default function Home() {
   const token = useStore(AuthStore, (s) => s.token)
   return (
@@ -27,28 +26,48 @@ export default function Home() {
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50">
         {/* Navigation */}
         <nav className="flex items-center justify-between p-6 max-w-7xl mx-auto">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-red-600 to-blue-600 rounded-lg flex items-center justify-center">
-              <Palette className="w-5 h-5 text-white" />
+          <div className="flex items-center justify-center gap-2">
+            <div className="w-8 h-8 text-black rounded-lg flex items-center justify-center">
+              <Palette className="w-5 h-5" />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-red-600 to-blue-600 bg-clip-text text-transparent">
+            <span className="text-xl font-bold bg-gradient-to-r from-purple-300 to-purple-400 bg-clip-text text-transparent">
               Draw
             </span>
           </div>
           <div className="flex items-center gap-4">
-            {token == null ? <> <Link href="/signin">
-              <Button variant="ghost">Sign In</Button>
-            </Link>
-              <Link className="hover:bg-purple-100 transition-transform hover:scale-95 rounded-full" href="/signup">
-                <Button>Get Started</Button>
-              </Link></> :
-              <Link className="hover:bg-red-100 transition-transform hover:scale-95 rounded-full" href="/dashboard">
-                <Button>Dashboard <ArrowRight className="text-green-700" strokeWidth={4} /></Button>
-              </Link>
+            {token == null ? <>
+
+              <Button
+                asChild
+                className="bg-gray-50 hover:bg-purple-200 border border-gray-900 transition-transform hover:scale-95 rounded-full text-black font-semibold"
+              >
+                <Link className="gap-[1px]" href="/signin">
+                  Sign In
+                </Link>
+              </Button>
+
+              <Button
+                asChild
+                className="bg-gray-50 hover:bg-purple-200 border border-gray-900 transition-transform hover:scale-95 rounded-full text-black font-semibold"
+              >
+                <Link className="gap-[1px]" href="/signup">
+                  Get Started <ArrowRight className="text-black" strokeWidth={1.7} />
+                </Link>
+              </Button>
+
+            </> :
+              <Button
+                asChild
+                className="bg-gray-50 hover:bg-orange-200 border border-gray-900 transition-transform hover:scale-95 rounded-full text-black font-semibold"
+              >
+                <Link className="gap-[1px]" href="/dashboard">
+                  Dashboard <ArrowRight className="text-black" strokeWidth={1.7} />
+                </Link>
+              </Button>
+
             }
           </div>
         </nav>
-
         {/* Hero Section */}
         <section className="max-w-7xl mx-auto px-6 py-20">
           <div className="text-center max-w-4xl mx-auto">
@@ -57,7 +76,7 @@ export default function Home() {
               <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-red-500 opacity-60 blur-xl"></div>
 
               {/* Badge */}
-              <div className="inline-flex items-center border border-30 border-red-900 gap-2 bg-white text-red-700 px-4 py-2 rounded-full text-sm font-medium relative">
+              <div className="inline-flex items-center border border-1 border-red-900 gap-2 bg-white text-red-700 px-4 py-2 rounded-full text-sm font-medium relative">
                 <Sparkles className="w-4 h-4" />
                 Collaborative Drawing Made Simple
               </div>
@@ -76,18 +95,25 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               {token == null ?
-                <Link className="hover:bg-red-100 transition-transform hover:scale-95 rounded-full" href="/signup">
-                  <Button size="lg" className="text-lg px-8 py-6">
-                    Start Drawing Now
-                    <ArrowRight className="w-5 h-5 ml-2 text-green-700" strokeWidth={4} />
+                <Button
+                  asChild
+                  className="bg-gray-50 hover:bg-purple-100 border border-gray-900 transition-transform hover:scale-95 rounded-full text-black font-semibold" size={"lg"}>
+                  <Link className="gap-[1px]" href="/signup">
+                    Start Drawing Now <ArrowRight className="text-black" strokeWidth={1.7} />
+                  </Link>
+                </Button> :
+                <>
+
+
+                  <Button
+                    asChild
+                    className="bg-gray-50 hover:bg-purple-100 border border-gray-900 transition-transform hover:scale-95 rounded-full text-black font-semibold" size={"lg"}>
+                    <Link className="gap-[1px]" href="/dashboard">
+                      Start Drawing Now <ArrowRight className="text-black" strokeWidth={1.7} />
+                    </Link>
                   </Button>
-                </Link> :
-                <Link className="hover:bg-purple-100 transition-transform hover:scale-95 rounded-full" href="/dashboard">
-                  <Button size="lg" className="text-lg px-8 py-6">
-                    Start Drawing Now
-                    <ArrowRight className="w-5 h-5 ml-2 text-green-700" strokeWidth={4} />
-                  </Button>
-                </Link>}
+                </>
+              }
             </div>
           </div>
 
@@ -196,11 +222,11 @@ export default function Home() {
         {/* Footer */}
         <footer className="max-w-7xl mx-auto px-6 py-12 border-t">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center gap-2 mb-4 md:mb-0">
-              <div className="w-6 h-6 bg-gradient-to-r from-red-600 to-blue-600 rounded-lg flex items-center justify-center">
-                <Palette className="w-4 h-4 text-white" />
+            <div className="flex items-center justify-center gap-2 mb-4 md:mb-0">
+              <div className="w-8 h-8 text-black rounded-lg flex items-center justify-center">
+                <Palette className="w-5 h-5" />
               </div>
-              <span className="font-bold bg-gradient-to-r from-red-600 to-blue-600 bg-clip-text text-transparent">
+              <span className="text-xl font-bold bg-gradient-to-r from-purple-300 to-purple-400 bg-clip-text text-transparent">
                 Draw
               </span>
             </div>

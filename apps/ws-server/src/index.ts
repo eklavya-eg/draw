@@ -47,27 +47,40 @@ wss.on("connection", function connection(ws: WebSocket, request: IncomingMessage
 
     ws.on("message", async function message(data) {
         let parsedData;
-        if(typeof data !== "string") {
+        if (typeof data !== "string") {
             parsedData = JSON.parse(data.toString());
         } else {
             parsedData = JSON.parse(data);
         }
-        
+
         const user = users.find(u => u.ws == ws);
         if (!user) {
             ws.close();
             return;
         }
         if (parsedData.type == "join_room") {
-            const res = axios.get(`${SERVER_URL}connect/${String(parsedData.roomId)}`, {
-                params: {
-                    pin: parsedData.pin
+            try {
+                const room = await prismaClient.room.findFirst({
+                    where: {
+                        id: Number(parsedData.roomId),
+                        // @ts-ignore
+                        pin: parsedData.pin
+                    }
+                });
+
+                if (room) {
+                    user.rooms.push(Number(parsedData.roomId));
                 }
-            })
-            user.rooms.push(Number(parsedData.roomId));
+            } catch (e) {
+
+            }
         }
         if (parsedData.type == "leave_room") {
             user.rooms.filter(room => room === Number(parsedData.roomId));
+        }
+        if (parsedData.type == "close_conn") {
+            users.filter(usr => usr.userId !== user.userId);
+            ws.close();
         }
         if (parsedData.type == "chat") {
             if (user.rooms.includes(Number(parsedData.roomId))) {
@@ -79,7 +92,7 @@ wss.on("connection", function connection(ws: WebSocket, request: IncomingMessage
                     }
                 })
                 users.forEach(usr => {
-                    if (usr.userId!=user.userId && usr.rooms.includes(Number(parsedData.roomId))) {
+                    if (usr.userId != user.userId && usr.rooms.includes(Number(parsedData.roomId))) {
                         usr.ws.send(JSON.stringify({
                             type: "chat",
                             message: parsedData.message,

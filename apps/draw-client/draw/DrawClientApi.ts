@@ -43,7 +43,7 @@ export class DrawClient {
     }
 
     async getExistingShapes() {
-        const res = await axios.get(`${SERVER_URL}chats/${this.roomId}`);
+        const res = await axios.get(`${SERVER_URL}api/chats/${this.roomId}`);
         const shapes = res.data.messages.map((shape: string) => {
             return JSON.parse(shape);
         })

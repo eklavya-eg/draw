@@ -16,12 +16,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Palette } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Signin() {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
+    const router = useRouter();
     const handleSignin = async () => {
-        const res = await axios.post(`${SERVER_URL}signin/`, {
+        const res = await axios.post(`${SERVER_URL}auth/signin/`, {
             email,
             password
         });
@@ -35,19 +37,20 @@ export default function Signin() {
             token: res.data.token,
             user: res.data.userId
         }))
+        router.push("/dashboard");
     }
     return (
             <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 flex items-center justify-center p-6">
                 <div className="w-full max-w-md">
                     {/* Logo */}
-                    <div className="flex items-center justify-center gap-2 mb-8">
-                        <div className="w-8 h-8 bg-gradient-to-r from-red-600 to-blue-600 rounded-lg flex items-center justify-center">
-                            <Palette className="w-5 h-5 text-white" />
+                <div className="flex items-center justify-center gap-2 mb-8">
+                        <div className="w-8 h-8 text-black rounded-lg flex items-center justify-center">
+                            <Palette className="w-5 h-5" />
                         </div>
-                        <span className="text-xl font-bold bg-gradient-to-r from-red-600 to-blue-600 bg-clip-text text-transparent">
-                            Draw
-                        </span>
-                    </div>
+                    <span className="text-xl font-bold bg-gradient-to-r from-purple-300 to-purple-400 bg-clip-text text-transparent">
+                        Draw
+                    </span>
+                </div>
 
                     <Card className="border-0 shadow-xl">
                         <CardHeader className="text-center">

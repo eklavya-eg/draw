@@ -6,13 +6,13 @@ import { authorization } from "../middlewares/auth";
 export const createroom = async (req: Request, res: Response) => {
     const parsedData = CreateRoomSchema.safeParse(req.body);
     if (!parsedData.success) {
-        res.json({
+        res.status(400).json({
             message: "Incorrect inputs"
         });
     }
     const slug = parsedData.data?.slug || "";
     const pin = parsedData.data?.pin || "";
-    const public_ = pin.length===0 ? true : false
+    const public_ = pin.length === 0 ? true : false
     try {
         const room = await prismaClient.room.create({
             data: {
@@ -26,14 +26,15 @@ export const createroom = async (req: Request, res: Response) => {
         })
         res.json({
             slug: slug,
-            roomId: room.id
+            roomId: room.id,
+            public: public_
         })
     } catch (e) {
         res.status(411).json({ message: "Slug not available" })
     }
 }
 
-export const myrooms = async (req: Request, res:Response) => {
+export const myrooms = async (req: Request, res: Response) => {
     try {
         const rooms = await prismaClient.room.findMany({
             where: {
@@ -43,10 +44,12 @@ export const myrooms = async (req: Request, res:Response) => {
             select: {
                 id: true,
                 slug: true,
+                // @ts-ignore
+                public: true
             }
         })
         res.json({
-            rooms: rooms.map((room)=>{
+            rooms: rooms.map((room) => {
                 return {
                     slug: room.slug,
                     roomId: room.id,
@@ -60,7 +63,7 @@ export const myrooms = async (req: Request, res:Response) => {
     }
 }
 
-export const rooms = async (req: Request, res:Response) => {
+export const rooms = async (req: Request, res: Response) => {
     const search = req.params.search ? req.params.search : "";
     try {
         const rooms = await prismaClient.room.findMany({
@@ -78,7 +81,7 @@ export const rooms = async (req: Request, res:Response) => {
             take: 3
         })
         res.json({
-            rooms: rooms.map((room)=>{
+            rooms: rooms.map((room) => {
                 return {
                     slug: room.slug,
                     roomId: room.id,
@@ -92,7 +95,7 @@ export const rooms = async (req: Request, res:Response) => {
     }
 }
 
-export const chats = async (req: Request, res:Response) => {
+export const chats = async (req: Request, res: Response) => {
     const roomId = Number(req.params.roomId);
     try {
         const chats = await prismaClient.chat.findMany({
@@ -100,15 +103,17 @@ export const chats = async (req: Request, res:Response) => {
                 roomId: roomId
             },
             select: {
-                message:true
+                message: true
             },
             orderBy: {
                 id: 'desc'
             },
         });
-        res.json({
-            messages: chats.map(chat=>chat.message)
-        })
+        if (chats) {
+            res.json({
+                messages: chats.map(chat => chat.message)
+            })
+        }
     } catch {
         res.status(404).json({
             message: "Error"
@@ -116,7 +121,7 @@ export const chats = async (req: Request, res:Response) => {
     }
 }
 
-export const getRoomId = async (req: Request, res:Response) => {
+export const getRoomId = async (req: Request, res: Response) => {
     const slug = req.params.slug;
     try {
         const room = await prismaClient.room.findFirst({
@@ -134,11 +139,11 @@ export const getRoomId = async (req: Request, res:Response) => {
     }
 }
 
-export const connect = async (req: Request, res:Response) => {
+export const connect = async (req: Request, res: Response) => {
     const roomId = req.params.roomId;
     const pin = req.query.pin as string || undefined;
-    if(!roomId || pin===undefined){
-        res.json({
+    if (!roomId || pin === undefined) {
+        res.status(400).json({
             message: "Incorrect Inputs"
         })
     }
@@ -151,7 +156,7 @@ export const connect = async (req: Request, res:Response) => {
             }
         });
 
-        if(room){
+        if (room) {
             res.json({
                 authorized: true
             })
@@ -164,5 +169,40 @@ export const connect = async (req: Request, res:Response) => {
         res.status(404).json({
             message: "Error"
         })
+    }
+}
+
+export const deletee = async (req: Request, res: Response) => {
+    const roomId = req.params.roomId;
+    // @ts-ignore
+    const userId = req.userId;
+    try {
+        const room = await prismaClient.room.findFirst({
+            where: {
+                id: Number(roomId),
+                adminId: userId,
+            },
+        });
+        if (!room) {
+            res.status(411).json({
+                message: "Unquthorized access"
+            });
+            return;
+        }
+        const deleteRoom = await prismaClient.room.delete({
+            where: {
+                id: Number(roomId),
+
+            }
+        })
+        if (room) {
+            res.json({
+                message: "Success"
+            });
+        }
+    } catch {
+        res.status(404).json({
+            message: "Error"
+        });
     }
 }

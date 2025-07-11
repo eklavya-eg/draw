@@ -6,8 +6,9 @@ import { ArrowLeftStartOnRectangleIcon, ArrowLongDownIcon, ArrowLongUpIcon, Arro
 import { Tool } from "@/types/tool"
 import { DrawClient } from "@/draw/DrawClientApi"
 
-export default function CanvasClient({ roomId }: {
-    roomId: string
+export default function CanvasClient({ roomId, pin }: {
+    roomId: string,
+    pin?: string | undefined
 }) {
     const { socket, loading } = useSocket();
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -23,17 +24,22 @@ export default function CanvasClient({ roomId }: {
         if (canvasRef.current && socket && !loading) {
             socket.send(JSON.stringify({
                 type: "join_room",
-                roomId: roomId
+                roomId: roomId,
+                pin: pin || ""
             }))
             const dc = new DrawClient(canvasRef.current, roomId, socket);
             setDrawClient(dc);
 
             return () => {
                 dc.destroyMouseHandlers();
+                // socket.send(JSON.stringify({
+                //     type: "close_conn",
+                // }))
+                // socket.close()
             }
         }
 
-    }, [canvasRef, roomId, loading, socket, currentSelected]);
+    }, [canvasRef, roomId, loading, socket, pin]);
 
     return loading ? (
         <div>

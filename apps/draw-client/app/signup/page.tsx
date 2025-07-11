@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Palette } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 
 
@@ -22,8 +23,9 @@ export default function Signup() {
     const [name, setName] = useState<string>("");
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
+    const router = useRouter();
     const handleSignup = async () => {
-        const res = await axios.post(`${SERVER_URL}signup/`, {
+        const res = await axios.post(`${SERVER_URL}auth/signup/`, {
             name,
             email,
             password
@@ -38,16 +40,17 @@ export default function Signup() {
             token: res.data.token,
             user: res.data.userId
         }))
+        router.push("/dashboard");
     }
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 flex items-center justify-center p-6">
             <div className="w-full max-w-md">
                 {/* Logo */}
                 <div className="flex items-center justify-center gap-2 mb-8">
-                    <div className="w-8 h-8 bg-gradient-to-r from-red-600 to-blue-600 rounded-lg flex items-center justify-center">
-                        <Palette className="w-5 h-5 text-white" />
-                    </div>
-                    <span className="text-xl font-bold bg-gradient-to-r from-red-600 to-blue-600 bg-clip-text text-transparent">
+                        <div className="w-8 h-8 text-black rounded-lg flex items-center justify-center">
+                            <Palette className="w-5 h-5" />
+                        </div>
+                    <span className="text-xl font-bold bg-gradient-to-r from-purple-300 to-purple-400 bg-clip-text text-transparent">
                         Draw
                     </span>
                 </div>
@@ -81,11 +84,9 @@ export default function Signup() {
                                 }}
                             />
                         </div>
-                        <Link href={"/dashboard"} >
-                            <Button className="w-full" size="lg" onClick={handleSignup} >
-                                Create Account
-                            </Button>
-                        </Link>
+                        <Button className="w-full" size="lg" onClick={handleSignup} >
+                            Create Account
+                        </Button>
                         <div className="text-center text-sm text-gray-600">
                             Already have an account?{" "}
                             <Link

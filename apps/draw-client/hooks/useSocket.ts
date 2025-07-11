@@ -17,7 +17,7 @@ export function useSocket(){
             setLoading(true);
             setSocket(null);
         }
-    }, [])
+    }, [token])
     return {
         socket,
         loading
