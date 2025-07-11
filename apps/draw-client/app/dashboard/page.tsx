@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -33,7 +32,6 @@ import {
   Search,
   Plus,
   Users,
-  Clock,
   Globe,
   Lock,
   Trash2,
@@ -145,7 +143,7 @@ export default function Dashboard() {
 
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<string>("");
-  const [selectedRoomId, setSelectedRoomId] = useState<number>("");
+  const [selectedRoomId, setSelectedRoomId] = useState<number>(1);
   const [enteredPassword, setEnteredPassword] = useState("");
 
   // Mock data for my drawing rooms
@@ -576,7 +574,7 @@ export default function Dashboard() {
                             className="w-full"
                             // variant={room.isActive ? "default" : "outline"}
                             variant={"default"}
-                            onClick={handleJoinRoom(room.roomId, room.public, room.slug)}
+                            onClick={() => handleJoinRoom(room.roomId, room.public, room.slug)}
                           >
                             {/* {room.isActive ? "Join Room" : "Enter Room"} */}
                             Join Room
