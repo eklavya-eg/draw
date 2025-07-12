@@ -12,8 +12,8 @@
 
 ## 🛠️ Tech Stack
 
-- **Next.js** – Frontend (in `apps/next`)
-- **Express + WS** – WebSocket server (in `apps/ws`)
+- **Express + WS** – WebSocket server & HTTP server (in `apps/ws`)
+- **Next.js + Tanstack** – Client server & State Management (in `apps/next`)
 - **Prisma + PostgreSQL** – Database and ORM
 - **Docker** – For running the database
 - **Turborepo + PNPM** – Monorepo management
