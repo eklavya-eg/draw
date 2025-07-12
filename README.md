@@ -1,6 +1,6 @@
 # 🎨 Draw
 
-**Draw** is a collaborative web-based drawing app where multiple users can join a shared canvas and draw in real time. Built with Next.js, WebSockets, and PostgreSQL, this project demonstrates a modern full-stack setup for real-time applications.
+**Draw** is a drawing app where multiple users can join a shared canvas and draw in real time. Built with Next.js, WebSockets, and PostgreSQL, this project demonstrates a modern full-stack setup for real-time applications.
 
 ---
 
@@ -65,7 +65,7 @@ pnpm run dev
 ---
 
 ## 📁 Project Structure
-
+```
 draw/
 ├── .github/
 │ └── workflows/
@@ -75,16 +75,15 @@ draw/
 ├── apps/
 │ ├── draw-client/
 │ └── ws-server/
-│ └── http-server/
 ├── packages/
-│ ├── config/
-│ ├── eslint-config-custom/
-│ ├── tsconfig/
-| ├── db/
-| | ├── prisma/
-│ | | ├── schema.prisma
-│ | └── .env
-│ | └── ui/
+│ ├── common/
+│ ├── db/
+│ │ ├── .env
+│ │ └── prisma/
+│ │   └── schema.prisma
+│ ├── eslint-config/
+│ ├── typescript-config/
+│ └── ui/
 ├── .editorconfig
 ├── .eslintrc.js
 ├── .gitignore
@@ -94,3 +93,4 @@ draw/
 ├── README.md
 ├── tailwind.config.ts
 └── turbo.json
+```
